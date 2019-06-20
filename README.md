@@ -3,7 +3,7 @@
 TerminBot ist eine Projektarbeit, die aus dem Multimodale Mensch-Maschine-Interaktion hervorgeht. Die Software ermöglicht es Termine auf neuartige Weise zu verwalten!
 
 ## Bibliotheken und Hardware
-Laden Sie sich die aktuellste Version von Processing herunter: [hier](https://processing.org/download/). Bevor das Programm gestartet werden kann, müssen einige Bibliotheken bei Processing installiert werden. Die Bibliotheken <em>Minim</em>, <em>OpenCV for Processing</em> und <em>Video</em> sind Voraussetzung. Zudem wird eine Webcam benötigt. Nach der Installation der Bibliotheken ist die Klasse <em>TerminBot</em> ausführbar.
+Laden Sie sich die aktuellste Version von Processing herunter: <a href="https://processing.org/download/" target="_blank">hier</a>. Bevor das Programm gestartet werden kann, müssen einige Bibliotheken bei Processing installiert werden. Die Bibliotheken <em>Minim</em>, <em>OpenCV for Processing</em> und <em>Video</em> sind Voraussetzung. Zudem wird eine Webcam benötigt. Nach der Installation der Bibliotheken ist die Klasse <em>TerminBot</em> ausführbar.
 
 ## Funktionalitäten
 Folgende Funktionalitäten wurden implementiert:
