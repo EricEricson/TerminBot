@@ -243,7 +243,7 @@ void readTermin(){
 
 /***** ALLE TERMIN-DATEIEN AUS VERZEICHNIS AUSGEBEN *****/
 void allDates(){
-   File[] files = listFiles("C:/Users/s77273/Desktop/TerminBot/data");
+   File[] files = listFiles("[ANPASSUNG LINK].../TerminBot/data");
    for (int i = 0; i < files.length; i++) {
       File f = files[i];   
       if(f.getName() != "sounds"){
