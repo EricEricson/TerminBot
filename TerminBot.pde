@@ -7,6 +7,7 @@ PFont f;
 
 // Variable to store text currently being typed
 String eingabe = "";
+String filePath = "C:/Users/s77273/Desktop/TerminBot/data";
 
 // Variable to store saved text when return is hit
 String saved = "";
@@ -34,7 +35,7 @@ void setup() {
 }
 
 void draw() {
-  // Damit man sofort mit der Eingabe beginnen kann oder das Fenster erst anklicken zu müssen
+  // Terminbot-Fenster beim Start im Focus
   frame.toFront();
   frame.requestFocus();
     
@@ -51,16 +52,17 @@ void draw() {
       
         break;
       case 2:
-        if(key == '\n' && state == 2 ){
-          
-          
-        text ("Bot: Möchtest du den Termin wirklich löschen? ", 25, 100);
-        if(head.isRight()){
-           deleteTermin(); 
+        if(key == '\n' && state == 2 ){          
+        text ("Bot: Möchtest du den Termin wirklich löschen? ", 25, 100);        
+        text ("[JA] - Kopf nacht rechts      [NEIN] - Kopf nach links ", 25, 120);
+        
+        if(head.isRight()){ // Wenn Kopf nach rechts --> Lösche eingegebenen Termin
+           deleteTermin();
+           text ("Bot: Der Termin wurde gelöscht ", 25, 150);           
            state = 0;}         
        else if(head.isLeft()){
          state = 0;}
-       }
+       }      
         break;
       case 3:
         text ("Bot: Das sind all deine Termine: ", 25, 100);
@@ -71,22 +73,25 @@ void draw() {
         break;
         
         case 99:        
-        text ("Bot: Das habe ich leider nicht verstanden. :(", 25, 80);
+        text ("Bot: Das habe ich leider nicht verstanden. :(", 25, 100);
     }
   
-  // Display everything
   text("Bot: Wie kann ich dir helfen? ", 25, 40);
   text ("Befehle:         [anlegen]           [ausgeben]         [löschen]", 25, 64);
   fill(0);
   text("Du: " + eingabe,25,500);
+  
+  
   head.track();
-  if (head.isNeutral()){
+  if (head.isNeutral()){ // Wenn Kopf mittig --> zeige grünen Punkt
     fill(12, 127, 0);
     circle(200, 10, 5);
-  }else{
+  }else{ // ansonsten zeige roten Punkt
     fill(255, 0, 0);
     circle(200, 10, 5);
   }
+  
+  fill(0, 88, 132);
 }
 
 void captureEvent(Capture c) {
@@ -94,7 +99,8 @@ void captureEvent(Capture c) {
 }
 
 
-void keyPressed() {    
+void keyPressed() { 
+  
   // Wenn Enter gedrückt wird überprüfe den String
   if (key == '\n' ) {
     saved = eingabe;
@@ -117,9 +123,7 @@ void keyPressed() {
         } else{ //<>//
           state = 99;
         }
-    
-      
-       
+        
     // String leeren
     eingabe = "";
   }    
@@ -151,11 +155,9 @@ static Iterable<MatchResult> findMatches( String pattern, CharSequence s )
 /***** TERMINE ANLEGEN *****/
 void writeTermin(){
   
- try {
-    
-    //String aktion = "[A-Z][a-z]* [[A-Z][a-z]]? ";
-    //String aktion = "[[A-Z][a-z]*] ]{1,3}";
-    String aktion = "[A-Z][a-z]*]";
+ try {    
+    // Wort beginnend mit großem Buchstaben
+    String aktion = "[A-ZÄÖÜ][a-zäöü]*";
     MatchResult matchAction = findMatches( aktion, saved ).iterator().next();
     
     //Tag Monat Jahr durch Punkte getrennt
@@ -168,19 +170,17 @@ void writeTermin(){
     
     String terminDate = matchDate.group();    
     String terminTime = matchTime.group();    
-    String terminAction = matchAction.group();
-   
+    String terminAction = matchAction.group();   
     
-   saved = terminAction +  " am " + terminDate + " um " + terminTime;
+    saved = terminAction +  " am " + terminDate + " um " + terminTime;
     
-   final String archive = dataPath(terminDate + ".txt");
-   String[] list = split(saved, ',');
-    
+    final String archive = dataPath(terminDate + ".txt");
+    String[] list = split(saved, ',');
     
     saveStrings(archive, list);
     println("\n\nDatei gespeichert!\n");
     
-   text ("Bot: Ich habe den Termin >> " + terminAction + " am "  + terminDate + " um " + terminTime  + " << gespeichert.", 25, 120);
+    text ("Bot: Ich habe den Termin >> " + terminAction + " am "  + terminDate + " um " + terminTime  + " << gespeichert.", 25, 120);
 
   } catch (Exception error_write) {
      System.out.println("error_write"); 
@@ -195,26 +195,16 @@ void deleteTermin(){
     String datum = "[0-3][0-9]\\.[0-1][0-9]\\.[1-2][0-9][0-9][0-9]";
     MatchResult matchDate = findMatches( datum, saved ).iterator().next();
     String terminDate = matchDate.group(); 
+  
+    String textDatei = dataPath(terminDate + ".txt");
+    File del = new File(textDatei);
+    del.delete();    
+    text ("Bot: Ich habe alle Termine am " + terminDate + " gelöscht. ", 25, 100);
     
-    
-      String textDatei = dataPath(terminDate + ".txt");
-      
-      File f = dataFile(textDatei);
-      String filePath = f.getPath();
-      boolean exist = f.isFile();
-      if(exist){println(filePath + "datei geht");}
-      else{println(filePath + "datei geht nicht");}
-      
-      
-      
-      
-      File del = new File(textDatei);
-      text ("Bot: Ich habe alle Termine am " + terminDate + " gelöscht. ", 25, 100);
-      del.delete();
+      System.out.println("Bot: Ich habe alle Termine am " + terminDate + " gelöscht. ");   
       
   } catch (Exception error_del){
-      System.out.println("error_del");
-      
+      System.out.println("error_del");      
       text ("Bot: Es existieren keine Termine, die gelöscht werden können.", 25, 120);
     }  
 }
@@ -229,8 +219,7 @@ void readTermin(){
     String terminDate = matchDate.group();  
     String ausgabe[] = loadStrings(terminDate + ".txt");
     for (int i = 0 ; i < ausgabe.length; i++) {      
-      //text((i+1) + ".            " + ausgabe[i], 25, 140+(i*20));
-     System.out.println(ausgabe[i]);
+     text((i+1) + ".            " + ausgabe[i], 25, 140+(i*20));
      speech.playString(ausgabe[i]);
      delay(6000); // wartet nach jeder Ausgabe 6 Sekunden damit .mp3 komplett abgespielt wird
     }
@@ -243,7 +232,7 @@ void readTermin(){
 
 /***** ALLE TERMIN-DATEIEN AUS VERZEICHNIS AUSGEBEN *****/
 void allDates(){
-   File[] files = listFiles("[ANPASSUNG LINK].../TerminBot/data");
+   File[] files = listFiles(filePath);
    for (int i = 0; i < files.length; i++) {
       File f = files[i];   
       if(f.getName() != "sounds"){

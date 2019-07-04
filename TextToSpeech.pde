@@ -15,7 +15,7 @@ public class TextToSpeech {
   AudioPlayer player;
   Minim minim;
 
-  String sketchPath = "[ANPASSUNG LINK].../TerminBot/data/sounds";
+  String sketchPath = "C:/Users/s77273/Desktop/TerminBot/data/sounds";
    
   public TextToSpeech(Minim minim) {
     this.minim = minim;
