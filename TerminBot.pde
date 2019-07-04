@@ -7,7 +7,7 @@ PFont f;
 
 // Variable to store text currently being typed
 String eingabe = "";
-String filePath = "C:/Users/s77273/Desktop/TerminBot/data";
+String filePath = "C:/....[FILE PATH]";
 
 // Variable to store saved text when return is hit
 String saved = "";
